@@ -1,62 +1,122 @@
-[Project]
-FileName=CAR RENTAL SYSTEM.dev
-Name=Project1
-Type=1
-Ver=2
-ObjFiles=
-Includes=
-Libs=
-PrivateResource=
-ResourceIncludes=
-MakeIncludes=
-Compiler=
-CppCompiler=
-Linker=
-IsCpp=1
-Icon=
-ExeOutput=
-ObjectOutput=
-LogOutput=
-LogOutputEnabled=0
-OverrideOutput=0
-OverrideOutputName=
-HostApplication=
-UseCustomMakefile=0
-CustomMakefile=
-CommandLine=
-Folders=
-IncludeVersionInfo=0
-SupportXPThemes=0
-CompilerSet=0
-CompilerSettings=0000000000000000000000000
-UnitCount=1
+#include <iostream>
+using namespace std;
 
-[VersionInfo]
-Major=1
-Minor=0
-Release=0
-Build=0
-LanguageID=1033
-CharsetID=1252
-CompanyName=
-FileVersion=
-FileDescription=Developed using the Dev-C++ IDE
-InternalName=
-LegalCopyright=
-LegalTrademarks=
-OriginalFilename=
-ProductName=
-ProductVersion=
-AutoIncBuildNr=0
-SyncProduct=1
+class Car {
+public:
+    int reg;
+    string brand;
+    int rentPerDay;
+    char available;
 
-[Unit1]
-FileName=main.cpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
+    Car(int r, string b, int rent, char a) {
+        reg = r;
+        brand = b;
+        rentPerDay = rent;
+        available = a;
+    }
 
+    void display() {
+        if (available == 'y') {
+            cout << "Car " << brand << " with Reg " << reg << " and with Rent " << rentPerDay << endl;
+        }
+    }
+};
+
+class CarRentalSystem {
+private:
+    Car* cars[5];
+    int size;
+
+public:
+    CarRentalSystem() {
+        cars[0] = new Car(123, "Suzuki", 2000, 'y');
+        cars[1] = new Car(234, "Honda", 2500, 'y');
+        cars[2] = new Car(345, "Toyota", 3000, 'y');
+        cars[3] = new Car(456, "MG", 3500, 'y');
+        cars[4] = new Car(567, "BMW", 5000, 'y');
+        size = 5;
+    }
+
+    void showAvailableCars() {
+        for (int i = 0; i < size; i++) {
+            cars[i]->display();
+        }
+    }
+
+    void reserveCar() {
+        int regNo, days;
+        cout << "Enter Registration No: ";
+        cin >> regNo;
+        cout << "Enter Total Days: ";
+        cin >> days;
+        bool found = false;
+        for (int i = 0; i < size; i++) {
+            if (cars[i]->reg == regNo && cars[i]->available == 'y') {
+                found = true;
+                cars[i]->available = 'n';
+                int bill = cars[i]->rentPerDay * days;
+                cout << "Your Rent For " << cars[i]->brand << " with Reg" << cars[i]->reg << " is: " << bill << endl;
+                break;
+            }
+        }
+        if (!found) {
+            cout << "This car is unavailable" << endl;
+        }
+    }
+
+    void returnCar() {
+        int regNo;
+        cout << "Enter Registration No: ";
+        cin >> regNo;
+        bool found = false;
+        for (int i = 0; i < size; i++) {
+            if (cars[i]->reg == regNo) {
+                cars[i]->available = 'y';
+                cout << "Car is Returned" << endl;
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            cout << "Incorrect Registration No!" << endl;
+        }
+    }
+};
+
+int main() {
+    CarRentalSystem crs;
+    while (true) {
+        cout << "Car Rental Management System" << endl;
+        cout << "----------------------------" << endl;
+        cout << "1.Show Available Cars" << endl;
+        cout << "2.Reserve a Car." << endl;
+        cout << "3.Return A Car." << endl;
+        cout << "4.Exit." << endl;
+        int choice;
+        cout << "Enter Your Choice: ";
+        cin >> choice;
+
+        if (choice == 1) {
+            system("cls");
+            crs.showAvailableCars();
+            cout << " " << endl;
+        } else if (choice == 2) {
+            system("cls");
+            crs.reserveCar();
+            cout << " " << endl;
+        } else if (choice == 3) {
+            system("cls");
+            crs.returnCar();
+            cout << " " << endl;
+        } else if (choice == 4) {
+            system("cls");
+            cout << "Best of Luck!" << endl;
+            cout << " " << endl;
+            break;
+        } else {
+            system("cls");
+            cout << " Invalid input!" << endl;
+        }
+    }
+    return 0;
+}
